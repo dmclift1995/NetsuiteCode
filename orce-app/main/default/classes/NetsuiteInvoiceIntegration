@@ -1,0 +1,18 @@
+public class NetsuiteInvoiceIntegration implements Schedulable {
+    
+    
+    public void execute(SchedulableContext context) {
+       Database.executeBatch( new NetsuiteInvoiceBatchable (), 1);
+    }
+
+    public static String conc(String s, String y)
+    {
+        String retString = '';
+        retString ='retString is';
+        retString = s + y;
+        retString = '222222';
+        retString = s + y;
+        return retString;
+    }
+
+}
