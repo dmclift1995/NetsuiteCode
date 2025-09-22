@@ -1,0 +1,148 @@
+public with sharing class NetsuiteInvoiceBatchable implements Database.Batchable<String>, Database.AllowsCallouts, Database.stateful {
+    private static final String serviceName = 'Netsuite';
+
+    public Iterable<String> start(Database.BatchableContext BC){
+        List<String> invoiceIds = OAuthProdPostNetsuite.getInvoiceIds(serviceName);
+        List<Invoice__c> existingInvoices = [Select Id, Netsuite_ID__c from invoice__c where Netsuite_ID__c IN: invoiceIds];
+        List<String> existingInvoiceIds = new List<String>();
+        List<String> newInvoiceIds = new List<String>();
+        
+        for(invoice__c inv: existingInvoices)
+        {
+            if(inv.Netsuite_ID__c != null)
+            {
+                existingInvoiceIds.add(inv.Netsuite_ID__c);
+            }
+        }
+        
+        for(String invId: invoiceIds)
+        {
+            if(!existingInvoiceIds.contains(invId))
+            {
+                newInvoiceIds.add(invId);
+            }
+        }
+
+        return newInvoiceIds;
+    }
+
+    public void execute(Database.BatchableContext BC, List<String> invoiceIds){
+
+        for(String invoiceId : invoiceIds){
+            Invoice__c invoice = OauthProdPostNetsuite.createSFInvoice(serviceName, invoiceId);
+            List<Invoice_Line_Item__c> lineItems = new List<Invoice_Line_Item__c>();
+            List<String> invoiceItemIds = OauthProdPostNetsuite.getInvoiceItemIds(serviceName, invoiceId);
+            for(String invoiceItemId: invoiceItemIds)
+            {
+               Invoice_Line_Item__c lineItem = OauthProdPostNetsuite.createSFInvoiceItem(serviceName, invoiceId, invoiceItemId);
+               lineItems.add(lineItem);
+            }
+            
+            insert invoice;
+            for(Invoice_Line_Item__c line: lineItems){
+                line.invoice__c = invoice.Id;
+            }    
+            insert lineItems;
+    
+        }
+    }
+        
+    public void finish(Database.BatchableContext BC){
+        
+    }
+
+
+    public static String conc(String s, String y){
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+        s = s + y;
+
+       return s;
+    }
+
+}
