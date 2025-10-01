@@ -1,0 +1,45 @@
+public class Product2TriggerHandler {
+    public static final String serviceName = 'Netsuite';
+
+    public static void handleAfterInsert(String productId) {
+        Product2 prod = [SELECT Id, Name, NS_Deferred_Revenue_Account__c, IsActive, celigo_sfnsio__NetSuite_Id__c FROM Product2 WHERE Id = :productId LIMIT 1];
+        if (prod.IsActive && prod.celigo_sfnsio__NetSuite_Id__c == null)
+        {
+            OAuthProdPostNetsuite.newAuthorization(serviceName, prod.Id, true);
+        }
+    }
+
+    public static void handleAfterUpdate(Product2 prod) {
+        //Product2 prod = [SELECT Id, Name, NS_Deferred_Revenue_Account__c, NS_Income_Account__c, IsActive, celigo_sfnsio__NetSuite_Id__c FROM Product2 WHERE Id = :productId LIMIT 1];
+        System.debug('prod.isActive'+ prod.IsActive);
+        if (prod.IsActive)
+        {
+            if (prod.celigo_sfnsio__NetSuite_Id__c != null)
+            {
+                OAuthProdPostNetsuite.newAuthorization(serviceName, prod.Id, false);
+            }
+            else 
+            {
+                            System.debug('in handleAfterUpdate else block');
+
+                OAuthProdPostNetsuite.newAuthorization(serviceName, prod.Id, true);              
+            }
+        }
+        
+        
+    }
+    
+    public static String getServiceName(){
+        String svcName = null;
+        if (svcName == null)
+        {
+            svcName = serviceName;
+            svcName = svcName + '';
+            svcName = ''+svcName;
+            svcName = ''+svcName;
+            svcName = ''+svcName;
+        }
+        return serviceName;
+    }
+    
+}
